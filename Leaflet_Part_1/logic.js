@@ -44,14 +44,6 @@ function createMarkers(response) {
                 x >=10  ? "#fff7bc":
                 x >= -10 ? "#2ac25f":
                 '#FFEDA0';
-
-        // x <= 10 ? "#2ac25f":
-        //     x <=30  ? "#fff7bc":
-        //     x <=50 ? "#fec44f":
-        //     x <=70 ? "#fdae6b":
-        //     x <= 90 ? "#fc9272":
-        //     x > 90 ? "#de2d26":
-        //     '#FFEDA0';
         }
         
     //define function that points to marker layer and will get information to fill
@@ -64,7 +56,7 @@ function createMarkers(response) {
     function style(feature) {
         return {
             radius: (feature.properties.mag)*4, 
-            color: depthcolor(feature.geometry.coordinates[3])
+            color: depthcolor(feature.geometry.coordinates[2])
         }
     }
     
