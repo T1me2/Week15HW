@@ -1,15 +1,17 @@
+// var newYorkCoords = [40.73, -74.0059];
+// var mapZoomLevel = 12;
 
 //create the createMap function
 function createMap(earthQuakes) {
-
+console.log(earthQuakes)
     //Create the tile layer that will be the background
     let map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     })
-
+    console.log(map)
     //Create basemaps to hold the lightmap layer
     let baseMaps = {
-            map: map
+            Map: map
         };
 
     let overlayMaps = {
@@ -17,32 +19,62 @@ function createMap(earthQuakes) {
     }
 
     //Create the map object 
-    let myMap = L.map("map-id", {
-        center: [37.09, -95.71],
-        zoom: 5
+    let myMap = L.map("map", {
+        center: [40.73, -74.0059],
+        zoom: 15
     });
 
     // create a layer control, and pass it baseMaps and overLayMaps
-    L.control.layer(baseMaps, overlayMaps).addTo(myMap)}
+    L.control.layers(baseMaps, overlayMaps).addTo(myMap)}
 
 //Create the createMarkers function.
 function createMarkers(response) {
     //Pull the stations property form the response.features
     let quakes = response.features
 
-    // initialize an array to hold the earthquake locations
-    let quake_locations = []
+    //Past to layer, will fill below with leaflet circle layer
+    let quakelayer = L.layerGroup();
 
-    //loop through the sations array
+    //define function to get color for depth
+    function depthcolor(x) {
+        return x > 90 ? "#de2d26":
+                x >= 70 ? "#fc9272":
+                x >=50 ? "#fdae6b":
+                x >=30 ? "#fec44f":
+                x >=10  ? "#fff7bc":
+                x >= -10 ? "#2ac25f":
+                '#FFEDA0';
 
-    for (var i=0; i < quakes.length; i++) {
-        quake_locations.push(
-            L.marker([quakes[i].geometry.coordinates]).bindPopup("<h1>" + "magintude: " + quakes[i].properties.mag + "</h1")
-
-        );
+        // x <= 10 ? "#2ac25f":
+        //     x <=30  ? "#fff7bc":
+        //     x <=50 ? "#fec44f":
+        //     x <=70 ? "#fdae6b":
+        //     x <= 90 ? "#fc9272":
+        //     x > 90 ? "#de2d26":
+        //     '#FFEDA0';
+        }
+        
+    //define function that points to marker layer and will get information to fill
+    function pointToLayer(geoJsonPoint, latlng) {
+        //use circle markers
+        return L.circleMarker(latlng);
     }
-    let quakelayer = L.layerGroup(quake_locations);
-    createMap(quakelayer);
+    
+    //style circle markers
+    function style(feature) {
+        return {
+            radius: (feature.properties.mag)*4, 
+            color: depthcolor(feature.geometry.coordinates[3])
+        }
+    }
+    
+    L.geoJSON(response, {
+        pointToLayer,
+        style,
+    }).addTo(quakelayer)
+
+    createMap(quakelayer)
+
 
 }
 
@@ -50,4 +82,5 @@ const url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month
 
 d3.json(url).then(function(response) {
     createMarkers(response)
+    console.log(response)
 })
