@@ -20,12 +20,24 @@ console.log(earthQuakes)
 
     //Create the map object 
     let myMap = L.map("map", {
-        center: [40.73, -74.0059],
-        zoom: 15
+        minZoom: 0,
+        maxzoom: 0
     });
+    myMap.setView([0,0], 2);
 
-    // create a layer control, and pass it baseMaps and overLayMaps
+    // let legend = L.control({position: 'bottomright'});
+
+    // legend.onAdd = function (myMap) {
+
+    //     let div = L.DomUtil.create('div', 'info legend'),
+    //         grades = [-10, 10, 30, 50, 70, 90],
+    //         labels = ["#2ac25f", "#fff7bc", "#fec44f", "#fdae6b", "#fc9272", "#de2d26"];
+
+    // };
+    // legend.addTo(myMap);
+    
     L.control.layers(baseMaps, overlayMaps).addTo(myMap)}
+    
 
 //Create the createMarkers function.
 function createMarkers(response) {
@@ -55,17 +67,18 @@ function createMarkers(response) {
     //style circle markers
     function style(feature) {
         return {
-            radius: (feature.properties.mag)*4, 
+            radius: (feature.properties.mag)*2, 
             color: depthcolor(feature.geometry.coordinates[2])
         }
     }
-    
+
     L.geoJSON(response, {
         pointToLayer,
         style,
     }).addTo(quakelayer)
 
     createMap(quakelayer)
+
 
 
 }
@@ -76,3 +89,4 @@ d3.json(url).then(function(response) {
     createMarkers(response)
     console.log(response)
 })
+
