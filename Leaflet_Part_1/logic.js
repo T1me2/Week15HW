@@ -54,7 +54,7 @@ function createMarkers(response) {
     //Pull the stations property form the response.features
     let quakes = response.features
 
-    //Past to layer, will fill below with leaflet circle layer
+    //Pass to layer, will fill below with leaflet circle layer
     let quakelayer = L.layerGroup();
 
     //define function to get color for depth
@@ -82,9 +82,16 @@ function createMarkers(response) {
         }
     }
 
+    //create fuction that pulls metadata to later be put in popup
+    function onEachFeature(feature, layer) {
+        layer.bindPopup("Magnitude: " + feature.properties.mag + "<br>Location: " + feature.properties.place);
+    }
+
+    //pass above information into map 
     L.geoJSON(response, {
         pointToLayer,
         style,
+        onEachFeature,
     }).addTo(quakelayer)
 
     createMap(quakelayer)
