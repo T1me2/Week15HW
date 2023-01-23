@@ -25,16 +25,26 @@ console.log(earthQuakes)
     });
     myMap.setView([0,0], 2);
 
-    // let legend = L.control({position: 'bottomright'});
+    //create legend for map 
+    let legend = L.control({position: 'bottomright'});
 
-    // legend.onAdd = function (myMap) {
+    legend.onAdd = function () {
 
-    //     let div = L.DomUtil.create('div', 'info legend'),
-    //         grades = [-10, 10, 30, 50, 70, 90],
-    //         labels = ["#2ac25f", "#fff7bc", "#fec44f", "#fdae6b", "#fc9272", "#de2d26"];
+        let div = L.DomUtil.create('div', 'info legend'),
+            grades = [-10, 10, 30, 50, 70, 90],
+            color = ["#2ac25f", "#fff7bc", "#fec44f", "#fdae6b", "#fc9272", "#de2d26"];
 
-    // };
-    // legend.addTo(myMap);
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + color[i] + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+        
+            return div;
+    };
+
+
+    legend.addTo(myMap);
     
     L.control.layers(baseMaps, overlayMaps).addTo(myMap)}
     
